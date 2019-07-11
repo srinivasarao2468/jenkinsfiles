@@ -1,0 +1,23 @@
+def handleCheckout = {
+	checkout ([
+		$class: 'GitSCM',
+		branches: scm.branches,
+		extensions: [
+				[$class: 'PruneStaleBranch'],
+				[$class: 'CleanCheckout']
+		],
+		userRemoteConfigs: scm.userRemoteConfigs
+	])
+}
+
+node() {
+	stage('setup') {
+		sh "env | sort"
+		handleCheckout()
+		sh "git branch -vv"
+	}
+
+	stage('test') {
+		sh "echo 'Throw in some tests here'"
+	}
+}
